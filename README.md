@@ -23,7 +23,7 @@ Toto heslo sa použije na spustenie príkazov vyžadujúcich administrátorské 
 ROOT_PASSWORD="kali"
 ```
 ## 2 Overenie a inštalácia potrebných balíkov
-Skript kontroluje, či je nástroj `certutil` dostupný v systéme. Ak nie je nainštalovaný, inštaluje ho pomocou apt balíčkovača pre Debian.
+Skript kontroluje, či je nástroj `certutil` dostupný v systéme. Ak nie je nainštalovaný, inštaluje ho pomocou `apt` balíčkovača pre Debian. Tento krok zabezpečuje, že systém má k dispozícii potrebné nástroje na správu certifikátov.
 
 ```bash
 if ! command -v certutil &> /dev/null; then
@@ -77,7 +77,7 @@ fi
 ```
 
 ## 6 Nastavenie proxy servera vo Firefoxe
-Skript pridáva do súboru `prefs.js` nastavenia proxy servera. Nastavenia sú použité pre HTTP aj HTTPS pripojenia. Proxy je nastavená na IP 10.0.2.15 a port 8080 a zmeny sa prejavia po reštartovaní Firefoxu ideálne príkazom `pkill firefox`. Po úspešnom dokončení, skript informuje používateľa.
+Skript pridáva do súboru `prefs.js` nastavenia proxy servera. Nastavenia sú použité pre HTTP aj HTTPS pripojenia. Proxy je nastavená na IP `10.0.2.15` a port `8080` a zmeny sa prejavia po reštartovaní Firefoxu ideálne príkazom `pkill firefox`. Po úspešnom dokončení, skript informuje používateľa.
 
 ```bash
 PREFS_FILE="$PROFILE/prefs.js"
