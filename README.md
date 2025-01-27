@@ -92,4 +92,7 @@ echo "user_pref(\"network.proxy.no_proxies_on\", \"\");" >> "$PREFS_FILE"
 
 echo "Proxy nastavenia boli uspesne aplikovane. Restartujte Firefox pre uplatnenie zmien."
 ```
+## Vylepšenie skriptu
+Automaticke stiahnutie súboru `cacert.der` z GitHub repozitára a jeho následne aplikovanie do Firefoxu.
+
 #### Autor: M
