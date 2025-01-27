@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Preddefinované root heslo
+ROOT_PASSWORD="your_default_password"
+
+# Overenie a inštalácia potrebných balíkov iba pre Debian/Kali Linux
+if ! command -v certutil &> /dev/null; then
+    echo "certutil nebol najdeny. Instalujem potrebne baliky..."
+    if [ -f /etc/debian_version ]; then
+        echo $ROOT_PASSWORD | sudo -S apt update && echo $ROOT_PASSWORD | sudo -S apt install -y libnss3-tools
+    else
+        echo "Tento skript funguje iba pre Debian."
+        exit 1
+    fi
+else
+    echo "certutil je uz nainstalovany."
+fi
+
+# Definovanie ciest certifikátu
+CERT_URL="https://easyupload.io/ukedmh"
+CERT_FILE="$HOME/Downloads/cacert.der"
+CERT_NICKNAME="BurpCA"
+FIREFOX_PROFILE_DIR="$HOME/.mozilla/firefox"
+
+# Stiahnutie certifikátu
+wget -O "$CERT_FILE" "$CERT_URL"
+
+if [ $? -ne 0 ]; then
+    echo "Nepodarilo sa stiahnut certifikat!"
+    exit 1
+fi
+
+# Nájsť Firefox profil
+PROFILE=$(find "$FIREFOX_PROFILE_DIR" -maxdepth 1 -type d -name "*.default-esr" -o -name "*.default" | head -n 1)
+
+if [ -z "$PROFILE" ]; then
+    echo "Firefox profil nebol najdeny!"
+    exit 1
+fi
+
+# Overenie, či je certifikát už pridaný
+if certutil -L -d "$PROFILE" | grep -q "$CERT_NICKNAME"; then
+    echo "Certifikat uz existuje vo Firefox profile. Preskakujem import."
+else
+    # Import certifikátu do Firefoxu
+    certutil -A -n "$CERT_NICKNAME" -t "TCu,Cu,Tu" -i "$CERT_FILE" -d "$PROFILE"
+
+    if [ $? -ne 0 ]; then
+        echo "Nepodarilo sa importovat certifikat!"
+        exit 1
+    fi
+
+    echo "Certifikat bol uspesne importovany."
+fi
+
+# Nastavenie proxy vo Firefoxe
+PREFS_FILE="$PROFILE/prefs.js"
+
+# Nastavenie manuálneho proxy servera
+echo "user_pref(\"network.proxy.type\", 1);" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.http\", \"10.0.2.15\");" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.http_port\", 8080);" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.ssl\", \"10.0.2.15\");" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.ssl_port\", 8080);" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.share_proxy_settings\", true);" >> "$PREFS_FILE"
+echo "user_pref(\"network.proxy.no_proxies_on\", \"\");" >> "$PREFS_FILE"
+
+echo "Proxy nastavenia boli uspesne aplikovane. Restartujte Firefox pre uplatnenie zmien."
