@@ -17,18 +17,9 @@ else
 fi
 
 # Definovanie ciest certifikátu
-CERT_URL="https://easyupload.io/ukedmh"
 CERT_FILE="$HOME/Downloads/cacert.der"
 CERT_NICKNAME="BurpCA"
 FIREFOX_PROFILE_DIR="$HOME/.mozilla/firefox"
-
-# Stiahnutie certifikátu
-wget -O "$CERT_FILE" "$CERT_URL"
-
-if [ $? -ne 0 ]; then
-    echo "Nepodarilo sa stiahnut certifikat!"
-    exit 1
-fi
 
 # Nájsť Firefox profil
 PROFILE=$(find "$FIREFOX_PROFILE_DIR" -maxdepth 1 -type d -name "*.default-esr" -o -name "*.default" | head -n 1)
