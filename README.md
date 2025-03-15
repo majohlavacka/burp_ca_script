@@ -95,4 +95,4 @@ echo "Proxy nastavenia boli uspesne aplikovane. Restartujte Firefox pre uplatnen
 ## Vylepšenie skriptu
 Automaticke stiahnutie súboru `cacert.der` z GitHub repozitára a jeho následne aplikovanie do Firefoxu.
 
-#### Autor: M
+#### Autor: MH
